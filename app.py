@@ -10,12 +10,12 @@ except Exception:
     SocketIO = None
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-DB = os.path.join(BASE, 'joy_bus_tracker.db')
+DB = os.path.join('/tmp' if os.environ.get('VERCEL') else BASE, 'joy_bus_tracker.db')
 app = Flask(__name__)
 app.secret_key = os.environ.get('JOY_BUS_SECRET') or secrets.token_hex(32)
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE=os.environ.get('SESSION_COOKIE_SAMESITE','Lax'),
-    SESSION_COOKIE_SECURE=os.environ.get('SESSION_COOKIE_SECURE','0') == '1',
+    SESSION_COOKIE_SECURE=os.environ.get('SESSION_COOKIE_SECURE', '1' if os.environ.get('VERCEL') else '0') == '1',
     MAX_CONTENT_LENGTH=1_000_000, JSON_SORT_KEYS=False
 )
 GPS_TIMEOUT_SECONDS = int(os.environ.get('GPS_TIMEOUT_SECONDS','90'))
